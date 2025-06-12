@@ -8,6 +8,42 @@ def menu():
     print("\t5 - Mostrar las frecuencias")
     print("\t6 - Mostrar las sumas de sus dígitos")
     print("\t7 - Verificar condiciones especiales")
+    print("\n\t0 - Salir")
+
+def complementoGrupo(listado):
+    ret = []
+    dig = {'0','1','2','3','4','5','6','7','8','9'}
+    for d in dig:
+        res = d
+        for c in listado:
+            if d in c:
+                res = None
+                break
+        if res is not None:
+            ret.append(res)
+    return ret
+
+#Funcion de Alta Diversidad Numérica
+def esAltaDiversidadNumerica(lista):
+    ret = True
+    for c in lista:
+        if len(c) < 5:
+            ret = False
+            break
+    return ret
+
+#Función para expresión lógica Par de Pares
+#Se define recibiendo una lista para que tenga sentido la lógica
+def parPares(listaConjuntos):
+    ret = False
+    if len(listaConjuntos) % 2 == 0:
+        for l in listaConjuntos:
+            if len(l) % 2 == 0:
+                ret = True
+            else:
+                ret = False
+                break
+    return ret
 
 def calcularFrecuencia(conjunto, dni):
     dictAux = {}
@@ -27,15 +63,15 @@ lista_conteo_dni = []
 lista_sumas_dni = []
 lista_conjuntos = []
 
-menu()
 while True:
-    op = input("Opción: ")
+    menu()
+    op = input("\n\t\tOpción: ")
     match op:
         case "1":
             lista_dni.append(input("Ingrese un dni: "))
             lista_conjuntos.append(set(lista_dni[cantidad_dni]))
             lista_conteo_dni.append(calcularFrecuencia(lista_conjuntos[cantidad_dni], lista_dni[cantidad_dni]))
-            lista_sumas_dni.append(lista_dni[cantidad_dni])
+            lista_sumas_dni.append(calcularSuma(lista_dni[cantidad_dni]))
             cantidad_dni += 1
         case "2":
             for i in lista_dni:
@@ -44,66 +80,56 @@ while True:
             for i in range(len(lista_dni)):
                 print(f"El conjunto de {lista_dni[i]} es {lista_conjuntos[i]}")
         case "4":
-            for i in lista_dni:
-                print()
+            print("¿Que operación desea realizar?")
+            print("\t1 - Unión")
+            print("\t2 - Intersección")
+            print("\t3 - Diferencia")
+            print("\t4 - Diferencia Simétrica")
+            operacion = input("\n\tOpción: ")
+            
+            for i in range(len(lista_conjuntos)):
+                print(f"{i} - {lista_conjuntos[i]}")
+            
+            sel1 = input("De la lista anterior ingrese el número del primer conjunto: ")
+            sel2 = input("De la lista anterior ingrese el número del segundo conjunto: ")
+            
+            con1 = lista_conjuntos[int(sel1)]
+            con2 = lista_conjuntos[int(sel2)]
+
+            match operacion:
+                case "1":
+                    print(f"La unión de {con1} y {con2} es {con1.union(con2)}")
+                case "2":
+                    print(f"La intersección de {con1} y {con2} es: {con1.intersection(con2)}")    
+                case "3":
+                    print(f"{con1} - {con2} es: {con1.difference(con2)}")
+                case "4":
+                    print(f"La diferencia simétrica de {con1} y {con2} es: {con1.symmetric_difference(con2)}")
+
+
         case "5":
-            pass
+            for i in range(len(lista_dni)):
+                print(f"El DNI {lista_dni[i]} tiene:")
+                for key, value in lista_conteo_dni[i].items():
+                    if value == 1:
+                        print(f"\t{value} vez el número {key}")
+                    else:
+                        print(f"\t{value} veces el número {key}")
+            
         case "6":
-            pass
-#inicializar diccionarios de conteo y listas de suma
-for i in range(CANTIDAD_DNI):
-    lista_conteo_dni.append({})
-    lista_sumas_dni.append(0)
+            for i in range(len(lista_dni)):
+                print(f"La suma de los dígitos de {lista_dni[i]} es {lista_sumas_dni[i]}")
+   
+        case "7":
+            for c in complementoGrupo(lista_dni):
+                print(f"Grupo sin {c}")
+            if esAltaDiversidadNumerica(lista_dni):
+                print("El grupo posee una alta diversidad numérica")
 
-#Ingreso de los DNI
-#for i in range(CANTIDAD_DNI):
-#    lista_dni.append(input("Ingrese el primer dni: "))
+            #Grupo Par de Pares
+            if parPares(lista_dni):
+                print("El grupo es Par y sus conjuntos son Pares. Es un PAR DE PARES!")
 
-
-#Generación de conjuntos con los DNI
-for i in range(CANTIDAD_DNI):
-    lista_conjuntos.append(set(lista_dni[i]))
-
-for i in range(CANTIDAD_DNI):
-    print(f"El conjunto de {lista_dni[i]} es: {lista_conjuntos[i]}")
-#print(f"El conjunto de {dni2} es: {conjunto_dni2}")
-
-#Cálculo y visualización de operaciones.
-#Union
-print(f"La unión de estos es: {conjunto_dni1.union(conjunto_dni2)}")
-#Intersección
-print(f"La intersección entre estos es: {conjunto_dni1.intersection(conjunto_dni2)}")
-#Diferencias
-print(f"La diferencia del primer dni por el segundo dni es: {conjunto_dni1.difference(conjunto_dni2)}")
-print(f"La diferencia del segundo dni por el primer dni es: {conjunto_dni2.difference(conjunto_dni1)}")
-#Diferencia Simétrica
-print(f"La diferencia simétrica de los conjuntos es: {conjunto_dni1.symmetric_difference(conjunto_dni2)}")
-
-#Conteo de frecuencia de cada dígito
-for c in conjunto_dni1:
-    conteo_dni1[c] = dni1.count(c)
-
-#Conteo de frecuencia de cada dígito
-for c in conjunto_dni2:
-    conteo_dni2[c] = dni2.count(c)
-
-#Muestra de la frecuencia de cada dígito.
-print(f"El DNI {dni1} tiene: ")
-for key, value in conteo_dni1.items():
-    print(f"\t{value} vez el número {key}")
-
-#Muestra de la frecuencia de cada dígito.
-print(f"El DNI {dni2} tiene: ")
-for key, value in conteo_dni2.items():
-    print(f"\t{value} vez el número {key}")
-
-
-#Suma de los digitos de cada dni y resultado.
-for c in dni1:
-    suma_dni1 += int(c)
-print(f"La suma de los dígitos de {dni1} es: {suma_dni1}")
-
-for c in dni2:
-    suma_dni2 += int(c)
-print(f"La suma de los dígitos de {dni2} es: {suma_dni2}")
-
+        case "0":
+            break
+    input("Enter para continuar")
